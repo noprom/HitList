@@ -25,7 +25,9 @@ class TableViewController: UITableViewController {
             
             let textField = alert.textFields![0] as! UITextField
             self.names.append(textField.text)
-            self.tableView.reloadData() // 重新加载数据
+            
+            let indexPath = NSIndexPath(forRow: (self.names.count-1), inSection: 0)
+            self.tableView.insertRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.Automatic)
         }
         // 取消按钮
         let cancelAction = UIAlertAction(title: "取消", style: UIAlertActionStyle.Default) { (action:UIAlertAction!) -> Void in
@@ -34,9 +36,8 @@ class TableViewController: UITableViewController {
         alert.addAction(saveAction)
         alert.addAction(cancelAction)
         alert.addTextFieldWithConfigurationHandler { (textField:UITextField!) -> Void in}
-        
         // 显示警告框
-        self.presentViewController(alert, animated: true) { () -> Void in}
+        self.presentViewController(alert, animated: true, completion: nil)
     }
     
     override func viewDidLoad() {
