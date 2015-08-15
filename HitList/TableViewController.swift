@@ -7,10 +7,12 @@
 //
 
 import UIKit
+import CoreData
 
 class TableViewController: UITableViewController {
 
     var names = [String]() // 姓名
+    var people = [NSManagedObject]()
     
     /**
     新增姓名
@@ -25,6 +27,8 @@ class TableViewController: UITableViewController {
             
             let textField = alert.textFields![0] as! UITextField
             self.names.append(textField.text)
+            // 保存姓名到core data
+            self.saveName(textField.text)
             
             let indexPath = NSIndexPath(forRow: (self.names.count-1), inSection: 0)
             self.tableView.insertRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.Automatic)
@@ -38,6 +42,33 @@ class TableViewController: UITableViewController {
         alert.addTextFieldWithConfigurationHandler { (textField:UITextField!) -> Void in}
         // 显示警告框
         self.presentViewController(alert, animated: true, completion: nil)
+    }
+    
+    /**
+    保存数据到core data
+    
+    :param: name 姓名
+    */
+    func saveName(name: String) {
+        // 1 取得总代理和托管对象内容总管
+        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        let managedContext = appDelegate.managedObjectContext!
+        
+        // 2 建立一个entity
+        let entity = NSEntityDescription.entityForName("Person", inManagedObjectContext: managedContext)
+        let person = NSManagedObject(entity: entity!, insertIntoManagedObjectContext: managedContext)
+        
+        // 3 保存文本框中的name
+        person.setValue(name, forKey: "name")
+        
+        // 4 保存entity到托管对象的内容总管中
+        var error:NSError?
+        if !managedContext.save(&error) {
+            println("无法保存\(error), \(error?.userInfo)")
+        }
+        
+        // 5 保存到数组中
+        people.append(person)
     }
     
     override func viewDidLoad() {
@@ -71,8 +102,9 @@ class TableViewController: UITableViewController {
 
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as! UITableViewCell
-
-        cell.textLabel?.text = names[indexPath.row]
+        
+        let person = people[indexPath.row]
+        cell.textLabel?.text = person.valueForKey("name") as! String?
         
         return cell
     }
