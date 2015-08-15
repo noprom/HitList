@@ -18,7 +18,25 @@ class TableViewController: UITableViewController {
     :param: sender <#sender description#>
     */
     @IBAction func addName(sender: AnyObject) {
+        // 警告框
+        var alert = UIAlertController(title: "添加姓名", message: "请输入一个名字", preferredStyle: UIAlertControllerStyle.Alert)
+        // 保存按钮
+        let saveAction = UIAlertAction(title: "保存", style: UIAlertActionStyle.Default) { (action:UIAlertAction!) -> Void in
+            
+            let textField = alert.textFields![0] as! UITextField
+            self.names.append(textField.text)
+            self.tableView.reloadData() // 重新加载数据
+        }
+        // 取消按钮
+        let cancelAction = UIAlertAction(title: "取消", style: UIAlertActionStyle.Default) { (action:UIAlertAction!) -> Void in
+        }
+        // 添加按钮到alert
+        alert.addAction(saveAction)
+        alert.addAction(cancelAction)
+        alert.addTextFieldWithConfigurationHandler { (textField:UITextField!) -> Void in}
         
+        // 显示警告框
+        self.presentViewController(alert, animated: true) { () -> Void in}
     }
     
     override func viewDidLoad() {
