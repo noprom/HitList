@@ -52,10 +52,10 @@ class TableViewController: UITableViewController {
     func saveName(name: String) {
         // 1 取得总代理和托管对象内容总管
         let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-        let managedContext = appDelegate.managedObjectContext!
+        let managedContext = appDelegate.managedObjectContext
         
         // 2 建立一个entity
-        let entity = NSEntityDescription.entityForName("Person", inManagedObjectContext: managedContext)
+        let entity = NSEntityDescription.entityForName("Person", inManagedObjectContext: managedContext!)
         let person = NSManagedObject(entity: entity!, insertIntoManagedObjectContext: managedContext)
         
         // 3 保存文本框中的name
@@ -63,7 +63,7 @@ class TableViewController: UITableViewController {
         
         // 4 保存entity到托管对象的内容总管中
         var error:NSError?
-        if !managedContext.save(&error) {
+        if !managedContext!.save(&error) {
             println("无法保存\(error), \(error?.userInfo)")
         }
         
